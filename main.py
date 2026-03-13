@@ -11,28 +11,41 @@ def sum_negatives_and_zero(numbers):
     return reduce(lambda acc, y: acc + power_of_four(y), filtered, 0)
 
 
-def process_case(lines, index):
-    x = int(lines[index])
-    nums_line = lines[index + 1].split()
-    if len(nums_line) != x:
-        return -1, index + 2
-    numbers = list(map(int, nums_line))
-    result = sum_negatives_and_zero(numbers)
-    return result, index + 2
+def read_line():
+    line = sys.stdin.readline()
+    if not line:
+        return ""
+    stripped = line.strip()
+    if not stripped:
+        return read_line()
+    return stripped
 
+def process_case():
+    x_line = read_line()
+    if not x_line:
+        return None
+    x = int(x_line)
+    nums_line = read_line()
+    nums_str = nums_line.split()
+    if len(nums_str) != x:
+        return -1
+    numbers = list(map(int, nums_str))
+    return sum_negatives_and_zero(numbers)
 
-def process_all(lines, n, index, results):
+def process_all(n, results):
     if n == 0:
         return results
-    result, next_index = process_case(lines, index)
-    return process_all(lines, n - 1, next_index, results + [result])
-
+    res = process_case()
+    if res is None:
+        return results
+    return process_all(n - 1, results + [res])
 
 def main():
-    data = sys.stdin.read().split('\n')
-    lines = list(filter(lambda l: l.strip() != '', data))
-    n = int(lines[0])
-    results = process_all(lines, n, 1, [])
+    n_line = read_line()
+    if not n_line:
+        return
+    n = int(n_line)
+    results = process_all(n, [])
     print('\n'.join(map(str, results)))
 
 
